@@ -20,8 +20,8 @@ cat $TEMP_FILE \
 	> $TEMP_FILE$HTML_EXTENSION
 
 cat $TEMP_FILE$HTML_EXTENSION \
-	| sed -E "s|^([0-9]+:[0-9]+) {4}|<linenums>\1</linenums>|" \
-	| sed -E "s|^</span>([0-9]+:[0-9]+) {4}|</span><linenums>\1</linenums>|" \
+	| sed -E "s|^([0-9]+:[0-9]+) {4}|</dd></div>\\\n<div class='line'><dt>\1</dt><dd class='pre'>|" \
+	| sed -E "s|^</span>([0-9]+:[0-9]+) {0,4}|</span></dd></div>\\\n<div class='line'><dt>\1</dt><dd class='pre'>|" \
 	> "$TEMP_FILE"
 
 CSS=$(cat <<EOL
@@ -31,11 +31,21 @@ linenums{
 	padding-right: 0.25rem;
 	border-right: solid 1px #ccc;
 }
-.preformatted {
+.pre {
 	font-family: monospace;
 	white-space: pre;
 }
-
+dt,dd{
+	font-family: monospace;
+	height: 1em;
+	display: inline-block;
+}
+dl {
+	position: relative;
+}
+.line{
+	display:block;
+}
 .bold {font-style: bold;}
 .green { color: green; }
 .red { color: red;}
@@ -51,11 +61,12 @@ HEADER=$(cat <<EOL
 		</style>
 	</head>
 	<body>
-		<div class="preformatted">
+		<dl>
+			<dt style="display:none;"></dt><dd style="display:none;"><!-- temporary to compensate for 1st one -->
 EOL)
 
 FOOTER=$(cat <<EOL
-</div>
+</dl>
 	</body>
 </html>
 EOL)
@@ -67,7 +78,8 @@ echo "$HEADER$(<$TEMP_FILE)$FOOTER" > $TEMP_FILE$HTML_EXTENSION
 open -a Google\ Chrome $TEMP_FILE$HTML_EXTENSION
 #open -a Safari $TEMP_FILE$HTML_EXTENSION
 sleep 1
-#mv $TEMP_FILE$HTML_EXTENSION "foo.html"
-rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
+mv $TEMP_FILE$HTML_EXTENSION "foo.html"
+#rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
+rm $TEMP_FILE
 
 exit 0
