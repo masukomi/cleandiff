@@ -4,23 +4,23 @@
 #echo "MERGED: $3"
 
 TEMP_FILE="$(mktemp /tmp/cleandifffapp.XXXXXX).cdiff"
+HTML_EXTENSION=".html"
 
 diff -u $1 $2 | dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()|-=~>\"\\\\" \
 	--diff-input - | cat > $TEMP_FILE
 
 FILE_PATH=`grep --color=none +++ $TEMP_FILE | sed -e 's/+++ //' -e 's/	.*//'`
 
+
 cat $TEMP_FILE \
 	| sed -e '/^\+\+\+/ d' -e '/^---/ d' -e '/^@@.*@@/d' \
 	| sed -E 's/^ +([0-9]+:[0-9]+)/\1/' \
 	| sed -E "s/("$'\E'"\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]) +([0-9]+)/\1\5/g" \
-	| aha > "$TEMP_FILE.bak" | mv "$TEMP_FILE.bak" $TEMP_FILE
+	| aha --stylesheet > $TEMP_FILE$HTML_EXTENSION
 
-gvim -O $TEMP_FILE
+#gvim -O $TEMP_FILE
+open -a Safari $TEMP_FILE$HTML_EXTENSION
+sleep 1
+rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
 
-# the sed "span" stuff is to remove the leading whitespace
-# at the start of the lines it's always followed by a number, 
-# but I don't believe we need to actually check
-
-echo "rm $TEMP_FILE; #kill it please: original file path was $FILE_PATH"
 exit 0
