@@ -20,14 +20,54 @@ cat $TEMP_FILE \
 	> $TEMP_FILE$HTML_EXTENSION
 
 cat $TEMP_FILE$HTML_EXTENSION \
- 	| sed -E "s|^([0-9]+:[0-9]+)|<linenums>\1</linenums>|" \
- 	| sed -E "s|^</span>([0-9]+:[0-9]+)|</span><linenums>\1</linenums>|" \
- 	> "$TEMP_FILE"
- mv $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
+	| sed -E "s|^([0-9]+:[0-9]+) {4}|<linenums>\1</linenums>|" \
+	| sed -E "s|^</span>([0-9]+:[0-9]+) {4}|</span><linenums>\1</linenums>|" \
+	> "$TEMP_FILE"
+
+CSS=$(cat <<EOL
+linenums{
+	display: inline-block;
+	min-width: 1%;
+	padding-right: 0.25rem;
+	border-right: solid 1px #ccc;
+}
+.preformatted {
+	font-family: monospace;
+	white-space: pre;
+}
+
+.bold {font-style: bold;}
+.green { color: green; }
+.red { color: red;}
+
+EOL)
+
+HEADER=$(cat <<EOL
+<html>
+	<head>
+		<title>$FILE_PATH</title>
+		<style>
+		$CSS
+		</style>
+	</head>
+	<body>
+		<div class="preformatted">
+EOL)
+
+FOOTER=$(cat <<EOL
+</div>
+	</body>
+</html>
+EOL)
+
+echo "$HEADER$(<$TEMP_FILE)$FOOTER" > $TEMP_FILE$HTML_EXTENSION
+
+
 #gvim -O $TEMP_FILE
-open -a Safari $TEMP_FILE$HTML_EXTENSION
+open -a Google\ Chrome $TEMP_FILE$HTML_EXTENSION
+#open -a Safari $TEMP_FILE$HTML_EXTENSION
 sleep 1
-mv $TEMP_FILE$HTML_EXTENSION "foo.html"
-#rm $TEMP_FILE$HTML_EXTENSION
+#mv $TEMP_FILE$HTML_EXTENSION "foo.html"
+rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
 
 exit 0
