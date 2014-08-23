@@ -16,7 +16,7 @@ cat $TEMP_FILE \
 	| sed -e '/^\+\+\+/ d' -e '/^---/ d' -e '/^@@.*@@/d' \
 	| sed -E 's/^ +([0-9]+:[0-9]+)/\1/' \
 	| sed -E "s/("$'\E'"\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]) +([0-9]+)/\1\5/g" \
-	| aha --stylesheet \
+	| aha --stylesheet --no-header -t "$FILE_PATH" \
 	> $TEMP_FILE$HTML_EXTENSION
 
 cat $TEMP_FILE$HTML_EXTENSION \
@@ -27,6 +27,7 @@ cat $TEMP_FILE$HTML_EXTENSION \
 #gvim -O $TEMP_FILE
 open -a Safari $TEMP_FILE$HTML_EXTENSION
 sleep 1
-rm $TEMP_FILE$HTML_EXTENSION
+mv $TEMP_FILE$HTML_EXTENSION "foo.html"
+#rm $TEMP_FILE$HTML_EXTENSION
 
 exit 0
