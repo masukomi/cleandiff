@@ -64,11 +64,15 @@ Next install the [Colorizer Plugin](https://github.com/chrisbra/Colorizer) and a
 Now that you've got Vim configured to handle files with ANSI escape codes, and it knows how to detect `.cdiff` files, you'll want to uncomment the appropriate line at the bottom of our `cdiff` script. 
 
 	#MacVim
-	mvim -O $TEMP_FILE
+	mvim $TEMP_FILE
 
-The `-O` is optional, but comes into play when we use `cdiff` in conjunction with `git difftool` which will frequently show the diffs of multiple files. In this situation the -O causes them to open up in new vertical splits, which is nice when it's just a couple files, and terrible when it's piles of files. 
+*Note / Rant*  
+Unfortunately, when using this with `git difftool` *it will open a new window 
+for every file you're diffing*, which sucks. 
 
-If you've got a better solution, please let me know.
+There's no real way to determine if your receiving one request for diffs in a series, or just one request, but in the future we can work to hack a solution by queueing up the requests to `vim` (and other editors) if they happen with very little time in between. 
+
+If you've got a better solution, please file an issue or Pull Request.
 
 
 EMACS:

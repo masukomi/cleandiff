@@ -92,12 +92,15 @@ echo "$HEADER$(<"$TEMP_FILE.partial.$HTML_EXTENSION")$FOOTER" > $TEMP_FILE$HTML_
 
 
 #gvim:
-#gvim -O $TEMP_FILE
+#gvim $TEMP_FILE
 
 #MacVim:
-#mvim -O $TEMP_FILE
+#mvim $TEMP_FILE
 
-#vim -O $TEMP_FILE
+#vim $TEMP_FILE
+
+# Your default browser
+#open $TEMP_FILE$HTML_EXTENSION
 
 #Chrome (on os x)
 #open -a Google\ Chrome $TEMP_FILE$HTML_EXTENSION
