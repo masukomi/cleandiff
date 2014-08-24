@@ -8,7 +8,7 @@ HTML_EXTENSION=".html"
 
 # The heart of our functionality. 
 # diff the files and have dwdiff break the results down into smaller "words"
-diff -u $1 $2 | dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'|-=~>\"\\\\" \
+diff -u $1 $2 | dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'|-=~><\"\\\\" \
 	--diff-input - | cat > $TEMP_FILE
 
 # Extract the name of the file we're diffing
