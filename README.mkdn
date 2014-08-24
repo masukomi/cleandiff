@@ -1,0 +1,118 @@
+# CleanDiff
+(A better way to diff)
+
+Simplified diffing of files. Pass it any two files, or use it in conjunction with `git diff` or `git difftool`
+
+Screenshots coming soon.
+
+## **WARNING - 𝝰 software**
+This app, while stable, and safe, is still rough around the edges. It should work fine on OS X and Linux, but not Windows.
+
+### Geek instructions
+#### Installation
+
+CleanDiff currently requires 2 *nix utilities which most of you are unlikely to have installed: `dwdiff` and `aha`. On OS X we'd recommend you install them via [Homebrew](http://brew.sh). 
+
+	# on OS X (after Homebrew has been installed)
+	$ brew install dwdiff
+	$ brew install aha
+	
+Linux people should use whatever the package manager is for your distro.
+	
+Next up, fork this repo, clone it locally, and add the `cdiff` executable to your `$PATH`.
+
+	# at the bottom of your ~/.bashrc or ~/.bash_profile
+	PATH=$PATH:/path/to/cleandiff/folder
+
+
+#### Configuration
+Until CleanDiff has it's own GUI front-end (we're working on that) you'll have to make a choice of where you'd like to see the output.
+
+Your choices are:
+* Your favorite web browser
+* Your favorite text editor (probably)
+
+You'll also need to tell git how to use it as a graphical difftool.
+
+-----------------------------------------------------------------------
+
+**Configuring your favorite browser**  
+At the bottom of the cdiff file you'll see some comments about Chrome, Safari, Firefox. Uncomment / tweak the one that makes you most smiley.
+
+-----------------------------------------------------------------------
+
+**Configuring yor favorite text editor**  
+cdiff generates files with ANSI escape codes for coloring, so you'll need to install the appropriate plugin in your favorite editor to enable support for colorizing text with ANSI escape codes. Without that it'll probably display the raw codes, and it'll look like poo (not litterally. There's no brown in our code.)
+
+VIM:  
+
+First we need to enable filetype detection so that it'll automatically recognize `.cdiff` files (and thus enable us to auto-colorize them).
+ 
+Add this to your `~/.vim/filetypes.vim`
+
+	au! BufRead,BufNewFile *.cdf  setfiletype cdiff
+
+and create a file at `~/.vim/ftdetect/cdiff.vim` with the following content:
+
+	au BufNewFile,BufRead *.cdiff set filetype=cdiff
+	au BufNewFile,BufRead *.cdf set filetype=cdiff
+	
+Next install the [Colorizer Plugin](https://github.com/chrisbra/Colorizer) and add this to your `~/.vimrc`
+
+	let g:colorizer_auto_filetype='cdiff'
+	
+Now that you've got Vim configured to handle files with ANSI escape codes, and it knows how to detect `.cdiff` files, you'll want to uncomment the appropriate line at the bottom of our `cdiff` script. 
+
+	#MacVim
+	mvim -O $TEMP_FILE
+
+The `-O` is optional, but comes into play when we use `cdiff` in conjunction with `git difftool` which will frequently show the diffs of multiple files. In this situation the -O causes them to open up in new vertical splits, which is nice when it's just a couple files, and terrible when it's piles of files. 
+
+If you've got a better solution, please let me know.
+
+
+EMACS:
+
+Instructions to follow as soon as an Emacs geek tells us how. ;)
+
+-----------------------------------------------------------------------
+
+**Configuring Git**  
+
+Tell git it can use `cdiff`
+
+	$ git config --global difftool.cdiff.cmd "cdiff \"\$LOCAL\" \"\$REMOTE\" \"\$MERGED\""
+	
+If you decide that this is the best diff tool eVar! then you can make it your default graphical diff tool then you can make it the default by running this
+
+	$ git config --global diff.tool cdiff
+	$ git config --global diff.algorithm patience
+
+And if you haven't done it already you'll really want to disable the prompting, because it's really annoying.
+
+	$ git config --global difftool.prompt false
+
+### Usage
+(bet you thought we'd never get here, eh?)
+
+#### Usage without git
+
+Pretty much the same as diff, only without any options.
+
+	$ cdiff path/to/file/a.txt path/to/file/b.txt
+
+#### Usage with Git
+
+If you've configured it as your default difftool then all you need to say is:
+
+	$ git difftool <anything you could pass to git diff>
+	
+	#Ex.
+	$ git difftool HEAD^
+	$ git difftool fe0438
+	$ git difftool HEAD^..HEAD
+	# etc...
+	
+If you have *not* configured it as your default difftool then it's not very different. Just add in the `--tool` option like this:
+
+	$ git difftool --tool=cdiff <anything you could pass to git diff>
