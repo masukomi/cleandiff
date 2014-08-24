@@ -77,18 +77,15 @@ Instructions to follow as soon as an Emacs geek tells us how. ;)
 
 **Configuring Git**  
 
-Tell git it can use `cdiff`
-
-	$ git config --global difftool.cdiff.cmd "cdiff \"\$LOCAL\" \"\$REMOTE\" \"\$MERGED\""
-	
-If you decide that this is the best diff tool eVar! then you can make it your default graphical diff tool then you can make it the default by running this
-
-	$ git config --global diff.tool cdiff
-	$ git config --global diff.algorithm patience
+Configuring git is pretty simple. Just run the `integration/git_setup.sh` script.
 
 And if you haven't done it already you'll really want to disable the prompting, because it's really annoying.
 
 	$ git config --global difftool.prompt false
+
+While we're at it diffing with any git tool will be better for most folks with this
+
+	$ git config --global diff.algorithm patience
 
 ### Usage
 (bet you thought we'd never get here, eh?)
