@@ -43,7 +43,21 @@ CleanDiff currently requires 2 *nix utilities which most of you are unlikely to 
 	
 Linux people should use whatever the package manager is for your distro.
 	
-Next up, fork this repo, clone it locally, and add the `cdiff` executable to your `$PATH`.
+Next up, [fork this repo](https://github.com/masukomi/cleandiff/fork), then clone it locally: 
+
+	$ git clone https://github.com/<your username>/cleandiff.git
+	# or
+	$ git@github.com:<your username>/cleandiff.git
+	
+	
+	# For those who don't feel like forking, or don't have GitHub accounts
+	# (Luddites!)
+	
+	$ git clone https://github.com/masukomi/cleandiff.git
+	# or
+	$ git@github.com:masukomi/cleandiff.git
+
+and add the `cdiff` executable to your `$PATH`.
 
 	# at the bottom of your ~/.bashrc or ~/.bash_profile
 	PATH=$PATH:/path/to/cleandiff/folder
