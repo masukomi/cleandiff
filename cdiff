@@ -1,17 +1,30 @@
 #!/usr/bin/env sh
 #echo "LOCAL: $1"
 #echo "REMOTE: $2"
-#echo "MERGED: $3"
+#echo "MERGED: $3" # unused
 
 TEMP_FILE="$(mktemp /tmp/cleandifffapp.XXXXXX).cdiff"
 HTML_EXTENSION=".html"
 
+# The heart of our functionality. 
+# diff the files and have dwdiff break the results down into smaller "words"
 diff -u $1 $2 | dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'|-=~>\"\\\\" \
 	--diff-input - | cat > $TEMP_FILE
 
-FILE_PATH=`grep --color=none +++ $TEMP_FILE | sed -e 's/+++ //' -e 's/	.*//'`
+# Extract the name of the file we're diffing
+# $1 and $2 aren't trustable as names because 
+# when used with git diff(tool) they'll just be temp files.
+# There are a couple lines which start with --- and +++
+# which mention the name of the "left" and "right" sides of the diff. 
+# I've chosen the "right" one because it's more likely to be 
+# what you ended up with.
+FILE_NAME=`grep --color=none +++ $TEMP_FILE | sed -e 's/+++ //' -e 's/	.*//'`
 
-
+# Clean up the dwdiff output.
+# * Strip out the lines we don't need (like the ones showing what files
+#   are being diffed).
+# * Remove the + at the start of some lines (see Issue #2)
+# * Remove the leading whitespace before the line numbers
 cat $TEMP_FILE \
 	| sed -e '/^\+\+\+/ d' -e '/^---/ d' -e '/^@@.*@@/d' \
 		-e 's/^+//'\
@@ -26,12 +39,20 @@ mv "$TEMP_FILE.2" $TEMP_FILE
 #gvim -O $TEMP_FILE
 #sleep 0.5
 
+# Convert the ncurses to html
+# passing in a title, even though we're also passing in the 
+# --no-header option, which is kind-of silly, but I'm leaving it 
+# because it doesn't hurt and we may want it some day.
 cat $TEMP_FILE \
-	| aha --stylesheet --no-header -t "$FILE_PATH" \
+	| aha --stylesheet --no-header -t "$FILE_NAME" \
 	> $TEMP_FILE$HTML_EXTENSION
 
-# the weird newlines in the middle of the sed substitutions are because 
-# it seems to be the best way to get a newline in there.. :/
+# Clean up the HTML
+# NOTE:
+#  The weird newlines in the middle of the sed substitutions are because 
+#  it seems to be the best way to get a newline in there.. :/
+# 
+# * build table cells and rows around line numbers, and comments.
 cat $TEMP_FILE$HTML_EXTENSION \
 	| sed -E "s|^([0-9]+:[0-9]+) {4}|</td></tr>\
 <tr class='line pre' valign='top'><td class='linenums'>\1</td><td class='source'>|" \
@@ -40,6 +61,8 @@ cat $TEMP_FILE$HTML_EXTENSION \
 	> "$TEMP_FILE.partial.$HTML_EXTENSION"
 
 
+# Haz ourselves some CSS
+# for prettification.
 CSS=$(cat <<EOL
 body{
 	background: rgb(36,36,36);
@@ -70,27 +93,34 @@ td.source{
 
 EOL)
 
+# Haz ourselves some HTML 
+# for browserfication.
 HEADER=$(cat <<EOL
 <html>
 	<head>
-		<title>$FILE_PATH</title>
+		<title>$FILE_NAME</title>
 		<style>
 		$CSS
 		</style>
 	</head>
 	<body>
 		<table cellpadding="0" cellspacing="0">
-			<tr><td style="display:none;"></td><td style="display:none;"><!-- temporary to compensate for 1st one -->
+			<tr style="display: none"><td></td><td ><!-- temporary to compensate for 1st one -->
 EOL)
 
+
+# Mas HTML por favor.
 FOOTER=$(cat <<EOL
 </table>
 	</body>
 </html>
 EOL)
 
+# you put your header in, you put your css in, you put your footer in 
+# and you shake it all around.
 echo "$HEADER$(<"$TEMP_FILE.partial.$HTML_EXTENSION")$FOOTER" > $TEMP_FILE$HTML_EXTENSION
-
+# You do the hokey pokey, and you turn yourself around.
+# That's what it's all about.
 
 #gvim:
 #gvim $TEMP_FILE
