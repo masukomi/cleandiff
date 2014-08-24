@@ -1,9 +1,33 @@
 # CleanDiff
 (A better way to diff)
 
-Simplified diffing of files. Pass it any two files, or use it in conjunction with `git diff` or `git difftool`
+## Simplified diffing of files.
+CleanDiff removes the unnecessary noise from diffs so that your brain can focus
+on the important bits.
 
-Screenshots coming soon.
+Pass it any two files, or use it in conjunction with `git diff` or `git difftool`
+
+### Example
+Imagine you add a few words to a file, then want to see the diff. The screenshot
+below shows how nigh-impossible it is to see what's changed when you use `diff`.
+[Kaleidoscope](http://www.kaleidoscopeapp.com/) definitely improves on the situation, but CleanDiff makes it even clearer.
+
+#### Adding text
+
+<div width="90%">
+	<img src="https://raw.githubusercontent.com/masukomi/cleandiff/screenshots/screenshots/adding_words_comparison.png" style="max-width: 100%;" />
+</div>
+
+#### Changing text 
+(as opposed to just adding it)
+
+CleanDiff can show you what's been removed, in addition to what's been added. In
+the example below I changed a couple words in the previous text. The output from
+`diff` and `Kaleidoscope` look very similar to the screenshot above.
+
+<div width="90%">
+	<img src="https://raw.githubusercontent.com/masukomi/cleandiff/screenshots/screenshots/changing_words.png" style="max-width: 100%;" />
+</div>
 
 ## **WARNING - 𝝰 software**
 This app, while stable, and safe, is still rough around the edges. It should work fine on OS X and Linux, but not Windows.
