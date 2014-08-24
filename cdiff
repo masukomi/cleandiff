@@ -18,7 +18,7 @@ diff -u $1 $2 | dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'|-=~>\"\\\\" \
 # which mention the name of the "left" and "right" sides of the diff. 
 # I've chosen the "right" one because it's more likely to be 
 # what you ended up with.
-FILE_NAME=`grep --color=none +++ $TEMP_FILE | sed -e 's/+++ //' -e 's/	.*//'`
+FILE_NAME=`grep -m1 --color=none +++ $TEMP_FILE | sed -e 's/+++ //' -e 's/	.*//'`
 
 # Clean up the dwdiff output.
 # * Strip out the lines we don't need (like the ones showing what files
