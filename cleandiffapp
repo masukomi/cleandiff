@@ -25,6 +25,10 @@ cat $TEMP_FILE$HTML_EXTENSION \
 	> "$TEMP_FILE"
 
 CSS=$(cat <<EOL
+body{
+	background: rgb(36,36,36);
+	color: rgb(223, 216, 206);
+}
 .pre {
 	font-family: monospace;
 	white-space: pre;
@@ -38,14 +42,15 @@ td.linenums{
 	padding-right: 0.5rem;
 	border-right: solid 1px #ccc;
 	text-align: right;
+	color: rgb(255,222,165);
 }
 td.source{
 	margin-left: 1rem;
 	padding-left: 0.5rem;
 }
 .bold {font-style: bold;}
-.green { color: green; }
-.red { color: red;}
+.green { color: rgb(151, 206, 100);} /* rgb(129, 168, 190); } */
+.red { color: rgb(243, 86, 86);}
 
 EOL)
 
