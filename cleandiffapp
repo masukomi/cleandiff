@@ -49,8 +49,8 @@ td.source{
 	padding-left: 0.5rem;
 }
 .bold {font-style: bold;}
-.green { color: rgb(151, 206, 100);} /* rgb(129, 168, 190); } */
-.red { color: rgb(243, 86, 86);}
+.green { color: #79DB73;}
+.red { color: #af8dc3;}
 
 EOL)
 
