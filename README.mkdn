@@ -47,15 +47,9 @@ cdiff generates files with ANSI escape codes for coloring, so you'll need to ins
 VIM:  
 
 First we need to enable filetype detection so that it'll automatically recognize `.cdiff` files (and thus enable us to auto-colorize them).
- 
-Add this to your `~/.vim/filetypes.vim`
 
-	au! BufRead,BufNewFile *.cdf  setfiletype cdiff
-
-and create a file at `~/.vim/ftdetect/cdiff.vim` with the following content:
-
-	au BufNewFile,BufRead *.cdiff set filetype=cdiff
-	au BufNewFile,BufRead *.cdf set filetype=cdiff
+To do this just run the `integration/vim_setup.sh` script which will
+add a line to your `~/.vim/filetypes.vim` and create a `~/.vim/ftdetect/cdiff.vim` file.
 	
 Next install the [Colorizer Plugin](https://github.com/chrisbra/Colorizer) and add this to your `~/.vimrc`
 
