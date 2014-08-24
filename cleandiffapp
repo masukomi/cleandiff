@@ -50,7 +50,7 @@ td.source{
 }
 .bold {font-style: bold;}
 .green { color: #79DB73;}
-.red { color: #af8dc3;}
+.red { color: #f1a340;}
 
 EOL)
 
