@@ -47,7 +47,7 @@ Next up, [fork this repo](https://github.com/masukomi/cleandiff/fork), then clon
 
 	$ git clone https://github.com/<your username>/cleandiff.git
 	# or
-	$ git@github.com:<your username>/cleandiff.git
+	$ git clone git@github.com:<your username>/cleandiff.git
 	
 	
 	# For those who don't feel like forking, or don't have GitHub accounts
@@ -55,7 +55,7 @@ Next up, [fork this repo](https://github.com/masukomi/cleandiff/fork), then clon
 	
 	$ git clone https://github.com/masukomi/cleandiff.git
 	# or
-	$ git@github.com:masukomi/cleandiff.git
+	$ git clone git@github.com:masukomi/cleandiff.git
 
 and add the `cdiff` executable to your `$PATH`.
 
