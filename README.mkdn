@@ -2,15 +2,12 @@
 (A better way to diff)
 
 ## Simplified diffing of files.
-CleanDiff removes the unnecessary noise from diffs so that your brain can focus
-on the important bits.
+CleanDiff removes the unnecessary noise from diffs so that your brain can focus on the important bits.
 
 Pass it any two files, or use it in conjunction with `git diff` or `git difftool`
 
 ### Example
-Imagine you add a few words to a file, then want to see the diff. The screenshot
-below shows how nigh-impossible it is to see what's changed when you use `diff`.
-[Kaleidoscope](http://www.kaleidoscopeapp.com/) definitely improves on the situation, but CleanDiff makes it even clearer.
+Imagine you add a few words to a file, then want to see the diff. The screenshot below shows how nigh-impossible it is to see what's changed when you use `diff`. [Kaleidoscope](http://www.kaleidoscopeapp.com/) definitely improves on the situation, but CleanDiff makes it even clearer.
 
 #### Adding text
 
@@ -21,9 +18,7 @@ below shows how nigh-impossible it is to see what's changed when you use `diff`.
 #### Changing text 
 (as opposed to just adding it)
 
-CleanDiff can show you what's been removed, in addition to what's been added. In
-the example below I changed a couple words in the previous text. The output from
-`diff` and `Kaleidoscope` look very similar to the screenshot above.
+CleanDiff can show you what's been removed, in addition to what's been added. In the example below I changed a couple words in the previous text. The output from `diff` and `Kaleidoscope` look very similar to the screenshot above. 
 
 <div width="90%">
 	<img src="https://raw.githubusercontent.com/masukomi/cleandiff/screenshots/screenshots/changing_words.png" style="max-width: 100%;" />
@@ -33,6 +28,8 @@ the example below I changed a couple words in the previous text. The output from
 This app, while stable, and safe, is still rough around the edges. It should work fine on OS X and Linux, but not Windows.
 
 ### Geek instructions
+
+
 #### Installation
 
 CleanDiff currently requires 2 *nix utilities which most of you are unlikely to have installed: `dwdiff` and `aha`. On OS X we'd recommend you install them via [Homebrew](http://brew.sh). 
@@ -62,6 +59,8 @@ and add the `cdiff` executable to your `$PATH`.
 	# at the bottom of your ~/.bashrc or ~/.bash_profile
 	PATH=$PATH:/path/to/cleandiff/folder
 
+Please note. The [Term::AnsiColor gem](https://github.com/flori/term-ansicolor) installs a script called cdiff at /usr/bin. If you've installed this then you'll want to make sure that cleandiff's directory comes before `/usr/bin` in your path, or just get rid of their `cdiff` because really, why would you need it when you've got this?
+
 
 #### Configuration
 Until CleanDiff has it's own GUI front-end (we're working on that) you'll have to make a choice of where you'd like to see the output.
@@ -86,9 +85,8 @@ VIM:
 
 First we need to enable filetype detection so that it'll automatically recognize `.cdiff` files (and thus enable us to auto-colorize them).
 
-To do this just run the `integration/vim_setup.sh` script which will
-add a line to your `~/.vim/filetypes.vim` and create a `~/.vim/ftdetect/cdiff.vim` file.
-	
+To do this just run the `integration/vim_setup.sh` script which will add a line to your `~/.vim/filetypes.vim` and create a `~/.vim/ftdetect/cdiff.vim` file. 
+
 Next install the [Colorizer Plugin](https://github.com/chrisbra/Colorizer) and add this to your `~/.vimrc`
 
 	let g:colorizer_auto_filetype='cdiff'
@@ -99,8 +97,7 @@ Now that you've got Vim configured to handle files with ANSI escape codes, and i
 	mvim $TEMP_FILE
 
 *Note / Rant*  
-Unfortunately, when using this with `git difftool` *it will open a new window 
-for every file you're diffing*, which sucks. 
+Unfortunately, when using this with `git difftool` *it will open a new window  for every file you're diffing*, which sucks.  
 
 There's no real way to determine if your receiving one request for diffs in a series, or just one request, but in the future we can work to hack a solution by queueing up the requests to `vim` (and other editors) if they happen with very little time in between. 
 
