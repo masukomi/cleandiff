@@ -78,7 +78,7 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	# 
 	# * build table cells and rows around line numbers, and comments.
 	cat $TEMP_FILE$HTML_EXTENSION \
-		| sed -E "s|^([0-9]+:[0-9]+) {4}|</td></tr>\
+		| sed -E "s|^([0-9]+:[0-9]+) +|</td></tr>\
 	<tr class='line pre' valign='top'><td class='linenums'>\1</td><td class='source'>|" \
 		| sed -E "s|^</span>([0-9]+:[0-9]+) {0,4}|</span></td></tr>\
 	<tr class='line pre' valign='top'><td class='linenums'>\1</td><td class='source'>|" \
