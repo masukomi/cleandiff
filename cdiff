@@ -48,7 +48,7 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	FILE_NAME_2=`basename $2 | sed -E 's|^.{6}_||'`
 	if [ "$FILE_NAME" != "$FILE_NAME_2" ]; then
 		if [ "$FILE_NAME" != "null" ] && [ "$FILE_NAME_2" != "null" ]; then
-			$FILE_NAME="$FILE_NAME -> $FILE_NAME_2"
+			FILE_NAME="$FILE_NAME -> $FILE_NAME_2"
 		elif [ "$FILE_NAME" == "null" ]; then
 			FILE_NAME=$FILE_NAME_2
 		# otherwise FILE_NAME is good to go
