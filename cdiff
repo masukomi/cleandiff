@@ -101,7 +101,8 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	CSS=$(cat <<EOL
 	body{
 		background: rgb(36,36,36);
-		color: rgb(223, 216, 206);
+		color: rgb(163,160,165);
+		/* a dim, but visible grey(ish) */
 	}
 	.pre {
 		font-family: monospace;
