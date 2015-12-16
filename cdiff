@@ -34,7 +34,7 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	# CONS:
 	#  * lots of context you don't care about *most* of the time
 	
-	dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'|-=~><\"\\\\" $A $B | cat > $TEMP_FILE
+	dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'\!|-=~><\"\\\\" $A $B | cat > $TEMP_FILE
 
 	# Extract the name of the file we're diffing
 	# $A and $B aren't trustable as names because 
