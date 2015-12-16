@@ -165,7 +165,7 @@ EOL)
 			</div>
 		</body>
 	</html>
-	EOL)
+EOL)
 
 	# you put your header in, you put your css in, you put your footer in 
 	# and you shake it all around.
