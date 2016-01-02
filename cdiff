@@ -15,26 +15,7 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	# The heart of our functionality. 
 	# diff the files and have dwdiff break the results down into smaller "words"
 
-	# Option A: JUST pay attention to the section(s) of code that have
-	# been touched.
-	# PROS: 
-	#  * short
-	#  * probably all the info you need.
-	# CONS:
-	#  * line numbers are bullshit
-	#  * sometimes you need context for the changes.
-	# Cons are too high. Scrolling isn't onerous
-	#diff -u $A $B | dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'|-=~><\"\\\\" \
-	#	--diff-input - | cat > $TEMP_FILE
-	
 
-	# OPTION B: Show comparison of entire file(s)
-	# PROS:
-	#  * line numbers are real
-	#  * always have all the context
-	# CONS:
-	#  * lots of context you don't care about *most* of the time
-	
 	dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'\!|-=~><\"\\\\" $A $B | cat > $TEMP_FILE
 
 	# Extract the name of the file we're diffing
@@ -114,8 +95,9 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 		</head>
 		<body>
 			<div class="filename">$FILE_NAME</div>
-			<div class="diff"><span><div>
+			<div class="diff"><div><span>
 			<!-- last two to compensate for sedness -->
+			
 EOL)
 
 
