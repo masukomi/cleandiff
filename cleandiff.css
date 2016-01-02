@@ -3,12 +3,19 @@ body{
 	color: rgb(163,160,165);
 	/* a dim, but visible grey(ish) */
 }
+
+.diff{
+	display: table;
+}
+
+
 .pre {
 	font-family: monospace;
 	white-space: pre;
 }
 .line{
 	clear: left;
+	display:table-row;
 }
 .unchanged {
 	display: none;
@@ -19,14 +26,14 @@ body{
 	border-right: solid 1px #ccc;
 	text-align: right;
 	color: rgb(255,222,165);
-	float:left;
 	width:7em;
 	text-overflow: ellipsis;
+	display:table-cell;
 }
 .source{
 	margin-left: 1rem;
 	padding-left: 0.5rem;
-	float: left;
+	display:table-cell;
 }
 .bold {font-style: bold;}
 .green { color: #79DB73;}
