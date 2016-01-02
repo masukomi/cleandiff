@@ -79,9 +79,17 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 		| sed -E -e '/class="red|class="green/! {s/line pre/line pre unchanged/g;}' \
 		> "$TEMP_FILE.partial.$HTML_EXTENSION"
 
+	# what's that you say? 
+	# symlinks suck in bash?
+	# yes... yes they do.
+	pushd `dirname $0` > /dev/null
+	SCRIPT_PATH=`pwd -P`
+	if [ -h "$SCRIPT_PATH/cdiff" ]; then
+		SCRIPT_PATH=$(dirname $(stat -f "%Y" "$SCRIPT_PATH/cdiff" ))
+	fi
 	# Haz ourselves some CSS
 	# for prettification.
-	CSS=$(<cleandiff.css)
+	CSS=$(cat "$SCRIPT_PATH/cleandiff.css")
 
 	# Haz ourselves some HTML 
 	# for browserfication.
