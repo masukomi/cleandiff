@@ -122,25 +122,9 @@ EOL)
 	# You do the hokey pokey, and you turn yourself around.
 	# That's what it's all about.
 
-	#gvim:
-	#gvim $TEMP_FILE
-
-	#MacVim:
-	#mvim $TEMP_FILE
-
-	#vim $TEMP_FILE
-
-	# Your default browser
-	#open $TEMP_FILE$HTML_EXTENSION
 
 	#Chrome (on os x)
 	open -a Google\ Chrome $TEMP_FILE$HTML_EXTENSION
-
-	# Safari (on os x)
-	#open -a Safari $TEMP_FILE$HTML_EXTENSION
-
-	# Firefox (on os x)
-	#open -a Firefox $TEMP_FILE$HTML_EXTENSION
 
 	#sleep 3
 	sleep 0.5
