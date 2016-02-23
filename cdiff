@@ -9,6 +9,10 @@ B=$2
 TEMP_FILE="$(mktemp /tmp/cleandifffapp.XXXXXX).cdiff"
 HTML_EXTENSION=".html"
 # make sure we're only dealing with text files
+UNSET LANG
+# if you don't unset LANG then some files will cause the file command
+# to return: ERROR: line 22: regexec error 17, (illegal byte sequence)
+
 if file $A | grep 'text' >/dev/null 2>&1 || \
 	file $B | grep 'text' >/dev/null 2>&1 ; then
 
@@ -123,12 +127,8 @@ EOL)
 	# That's what it's all about.
 
 
-	#Chrome (on os x)
-	open -a Google\ Chrome $TEMP_FILE$HTML_EXTENSION
+	fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
 
-	#sleep 3
-	sleep 0.5
-	rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
 	exit 0
 else
 	if [ "/dev/null" == "$A" ]; then 
