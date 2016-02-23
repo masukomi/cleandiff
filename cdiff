@@ -9,7 +9,7 @@ B=$2
 TEMP_FILE="$(mktemp /tmp/cleandifffapp.XXXXXX).cdiff"
 HTML_EXTENSION=".html"
 # make sure we're only dealing with text files
-UNSET LANG
+unset LANG
 # if you don't unset LANG then some files will cause the file command
 # to return: ERROR: line 22: regexec error 17, (illegal byte sequence)
 
