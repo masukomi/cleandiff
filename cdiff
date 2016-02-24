@@ -106,6 +106,10 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 			</style>
 		</head>
 		<body>
+			<input type="checkbox" id="unchanged_checkbox">
+			<div class="controls">
+				<label for="unchanged_checkbox">toggle unchanged lines</label>
+			</div>
 			<div class="filename">$FILE_NAME</div>
 			<div class="diff"><div><span>
 			<!-- last two to compensate for sedness -->
@@ -126,7 +130,8 @@ EOL)
 	# You do the hokey pokey, and you turn yourself around.
 	# That's what it's all about.
 
-
+	#open -a Google\ Chrome $TEMP_FILE$HTML_EXTENSION
+	#sleep 0.5
 	fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
 	rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
 	exit 0

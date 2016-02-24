@@ -3,12 +3,9 @@ body{
 	color: rgb(163,160,165);
 	/* a dim, but visible grey(ish) */
 }
-
-.diff{
+.diff {
 	display: table;
 }
-
-
 .pre {
 	font-family: monospace;
 	white-space: pre;
@@ -19,6 +16,20 @@ body{
 }
 .unchanged {
 	display: none;
+}
+label {
+	display: inline-block;
+	cursor: pointer;
+	color: #F3D39D;
+}
+input[type=checkbox] {
+	display: none;
+}
+#unchanged_checkbox:checked ~ * .unchanged {
+	display: table-row;
+}
+.controls{
+	border-bottom: solid 1px rgba(115, 120, 144, 1);
 }
 .linenums{
 	margin-right: 1rem;
