@@ -128,7 +128,7 @@ EOL)
 
 
 	fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
-
+	rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
 	exit 0
 else
 	if [ "/dev/null" == "$A" ]; then 
