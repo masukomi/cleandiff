@@ -88,8 +88,10 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	# yes... yes they do.
 	pushd `dirname $0` > /dev/null
 	SCRIPT_PATH=`pwd -P`
-	if [ -h "$SCRIPT_PATH/cdiff" ]; then
-		SCRIPT_PATH=$(dirname $(stat -f "%Y" "$SCRIPT_PATH/cdiff" ))
+	if [ -h "$SCRIPT_PATH/cdiff" ]; then # if it's a symbolic link
+		SCRIPT_PATH=$(dirname $(readlink "$SCRIPT_PATH/cdiff" ))
+		# set the path to the folder containing the file
+		# the symlink points to
 	fi
 	# Haz ourselves some CSS
 	# for prettification.
