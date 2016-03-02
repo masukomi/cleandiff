@@ -17,6 +17,9 @@ body{
 .unchanged {
 	display: none;
 }
+.expanded{
+	display: table-row;
+}
 label {
 	display: inline-block;
 	cursor: pointer;
@@ -37,6 +40,7 @@ input[type=checkbox] {
 	width:7em;
 	text-overflow: ellipsis;
 	display:table-cell;
+	cursor: pointer;
 }
 .source{
 	margin-left: 1rem;
@@ -58,7 +62,11 @@ input[type=checkbox] {
 	padding: 0.25rem 0.5rem 0.25rem 0.5rem;
 	background: rgba(235,235,235,0.85);
 	border-bottom: 1px solid rgba(0,0,0,0.1);
-	text-align: center;
+	text-align: left;
+	width: 100%;
+	position: relative;
+	left: -8;
+	top: -8;
 }
 
 label {
