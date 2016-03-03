@@ -150,9 +150,9 @@ EOL)
 	# You do the hokey pokey, and you turn yourself around.
 	# That's what it's all about.
 
-	open -a Google\ Chrome $TEMP_FILE$HTML_EXTENSION
-	sleep 0.5
-	#fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
+	#open -a Google\ Chrome $TEMP_FILE$HTML_EXTENSION
+	#sleep 0.5
+	fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
 	rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
 	exit 0
 else
