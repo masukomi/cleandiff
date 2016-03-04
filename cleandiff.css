@@ -19,6 +19,7 @@ body{
 }
 .expanded{
 	display: table-row;
+	background: #313131;
 }
 label {
 	display: inline-block;

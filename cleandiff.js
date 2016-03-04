@@ -1,3 +1,5 @@
+var defaultClickExpansionSize = 10;
+
 function getChildren(node, skipMe){
 	var r = [];
 	for ( ; node; node = node.nextSibling ) 
@@ -58,7 +60,7 @@ function expandLaterSiblings(node, how_many){
 	}
 }
 function expandNodeIfUnchanged(node){
-	if (typeof(node) != "undefined"){
+	if (typeof(node) != "undefined" && node.nodeType == 1){
 		if (node.className.indexOf("unchanged") > -1) {
 			node.className = node.className + " expanded";
 		}
@@ -84,7 +86,8 @@ function addOnClickToAnchors(number_anchors){
 	for (var x = 0; x < number_anchors.length; x++){
 		var anchor = number_anchors[x]
 		anchor.addEventListener("click",
-			function(){expandPreviousSiblings(this.parentNode.parentNode, 20)}, false);
+			function(){expandPreviousSiblings(this.parentNode.parentNode,
+				defaultClickExpansionSize)}, false);
 	}
 }
 function expandAroundChangedLines(){
