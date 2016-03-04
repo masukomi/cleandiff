@@ -101,3 +101,18 @@ function activateAnchors(){
 	addOnClickToAnchors(number_anchors);
 	expandAroundChangedLines()
 }
+
+Array.prototype.first = function(){
+	if (this.length > 1){
+		return this[0];
+	}
+	return null;
+}
+
+Array.prototype.rest = function(){
+	if (this.length > 1){
+		return this.slice(1)
+	}
+	return new Array();
+}
+
