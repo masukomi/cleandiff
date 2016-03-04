@@ -31,6 +31,7 @@ input[type=checkbox] {
 }
 #unchanged_checkbox:checked ~ * .unchanged {
 	display: table-row;
+	background: #313131;
 }
 .linenums{
 	margin-right: 1rem;
@@ -71,13 +72,15 @@ input[type=checkbox] {
 }
 
 label {
-  font-size: 1.4em;
-  font-weight: 300;
-  color: #222;
-  max-height: 20px;
+	max-height: 20px;
 }
 
 #unchanged_toggle{
 	width: 30px;
 	margin-top: -20px;
+	float: left;
+	margin-right: 1em;
+}
+#unchanged_toggle g path {
+	fill: #F3D39D;
 }
