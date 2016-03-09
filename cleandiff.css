@@ -5,6 +5,7 @@ body{
 }
 .diff {
 	display: table;
+	width: 100%;
 }
 .pre {
 	font-family: monospace;
