@@ -2,9 +2,11 @@ var defaultClickExpansionSize = 10;
 
 function getChildren(node, skipMe){
 	var r = [];
-	for ( ; node; node = node.nextSibling ) 
-	   if ( node.nodeType == 1 && node != skipMe)
-		  r.push( node );		
+	for ( ; node; node = node.nextSibling ) {
+		if ( node.nodeType == 1 && node != skipMe){
+			r.push( node );
+		}
+	}
 	return r;
 };
 
