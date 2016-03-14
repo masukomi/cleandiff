@@ -40,6 +40,7 @@ CleanDiff currently requires 2 *nix utilities which most of you are unlikely to 
 	
 Linux people should use whatever the package manager is for your distro.
 	
+
 Next up, [fork this repo](https://github.com/masukomi/cleandiff/fork), then clone it locally: 
 
 	$ git clone https://github.com/<your username>/cleandiff.git
@@ -63,7 +64,17 @@ Please note. The [Term::AnsiColor gem](https://github.com/flori/term-ansicolor) 
 
 
 #### Configuration
-Until CleanDiff has it's own GUI front-end (we're working on that) you'll have to make a choice of where you'd like to see the output.
+You can View CleanDiff changes in [Fenestro](https://fenestro.xyz) if you're a
+mac user. Otherwise you'll need to view it's output in your favorite browser.
+
+By Default it will attempt to load its changes in Firefox.
+
+To use Fenestro:
+edit `~/config/cdiff/cdiff1.sh` and add `USE_FENESTRO=true`
+
+To change the browser: 
+edit `~/config/cdiff/cdiff1.sh` and add `BROWSER=MyFavoriteBrowser` Whatever you
+enter will be called with `open -a $BROWSER path/to/cdiff_output.html`
 
 Your choices are:
 * Your favorite web browser

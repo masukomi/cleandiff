@@ -146,9 +146,17 @@ EOL)
 	# You do the hokey pokey, and you turn yourself around.
 	# That's what it's all about.
 
-	#open -a Google\ Chrome $TEMP_FILE$HTML_EXTENSION
-	#sleep 0.5
-	fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
+	USE_FENESTRO=false
+	BROWSER="Firefox"
+	if [ -e "$HOME/.config/cdiff/cdiff1.sh" ]; then
+		source "$HOME/.config/cdiff/cdiff1.sh"
+	fi
+	if [ "$USE_FENESTRO" == "true" ]; then 
+		fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
+	else
+		open -a $BROWSER $TEMP_FILE$HTML_EXTENSION
+		sleep 0.5
+	fi
 	rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
 	exit 0
 else
