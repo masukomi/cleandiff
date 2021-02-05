@@ -20,7 +20,7 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	# diff the files and have dwdiff break the results down into smaller "words"
 
 
-	dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'\!|-=~><\"\\\\" $A $B | cat > $TEMP_FILE
+	dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'\!|-=~><\"\\\\" $A $B > $TEMP_FILE
 
 	# Extract the name of the file we're diffing
 	# $A and $B aren't trustable as names because 
@@ -49,24 +49,42 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	cat $TEMP_FILE \
 		| sed -e '/^\+\+\+/ d' -e '/^---/ d' -e '/^@@.*@@/d' \
 			-e 's/^+//'\
+		| sed -E "s/"$'\E'"\[K$/"$'\E'"\[0m/" \
+		| sed -E "s/^"$'\E'"\[0m *([0-9]+:[0-9]+)/\1/" \
 		| sed -E 's/^ +([0-9]+:[0-9]+)/\1/' \
 		| sed -E "s/("$'\E'"\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]) +([0-9]+)/\1\5/g" \
 		> "$TEMP_FILE.2"
+	cp "$TEMP_FILE" ~/workspace/cleandiff/test.cdiff # DEBUG
+	# mvim ~/workspace/cleandiff/test.cdiff #DEBUG
+	# sleep 0.5
 	mv "$TEMP_FILE.2" $TEMP_FILE
 	# ^^^  this version can be used by vim, emacs, etc 
 	# assuming they've got a plugin to support ANSI Escape Codes
 
-	#DEBUG
-	#gvim -O $TEMP_FILE
-	#sleep 0.5
+	# DEBUG
+	# echo "opening tempfile with escape codes in mvim"
+	cp $TEMP_FILE ~/workspace/cleandiff/test2.cdiff
+	# mvim ~/workspace/cleandiff/test2.cdiff
+	# sleep 0.5
+	# END DEBUG
 
 	# Convert the ncurses to html
 	# passing in a title, even though we're also passing in the 
 	# --no-header option, which is kind-of silly, but I'm leaving it 
 	# because it doesn't hurt and we may want it some day.
-	cat $TEMP_FILE \
-		| aha --stylesheet --no-header -t "$FILE_NAME" \
-		> $TEMP_FILE$HTML_EXTENSION
+	# cat $TEMP_FILE \
+	# 	| aha --stylesheet --no-header -t "$FILE_NAME" \
+	# 	> $TEMP_FILE$HTML_EXTENSION
+	echo "running oho"
+	cat $TEMP_FILE | oho --dark --title="$FILE_NAME" > $TEMP_FILE$HTML_EXTENSION
+
+	# DEBUG
+	# echo "opening html in mvim"
+	# mvim $TEMP_FILE$HTML_EXTENSION
+	# cat $TEMPFILE | oho -d > $TEMP_FILE"_2"$HTML_EXTENSION
+	# mvim $TEMP_FILE"_2"$HTML_EXTENSION
+	# sleep 0.5
+	# END DEBUG
 
 	# Clean up the HTML
 	# NOTE:
@@ -138,15 +156,18 @@ EOL)
 			activateAnchors();
 		</script>
 	</html>
-EOL)
+EOL
+		  )
 
 	# you put your header in, you put your css in, you put your footer in 
 	# and you shake it all around.
 	echo "$HEADER$(<"$TEMP_FILE.partial.$HTML_EXTENSION")$FOOTER" > $TEMP_FILE$HTML_EXTENSION
 	# You do the hokey pokey, and you turn yourself around.
 	# That's what it's all about.
+	if [ "$USE_FENESTRO" == "" ]; then
+		USE_FENESTRO=false
+	fi
 
-	USE_FENESTRO=false
 	BROWSER="Firefox"
 	if [ -e "$HOME/.config/cdiff/cdiff1.sh" ]; then
 		source "$HOME/.config/cdiff/cdiff1.sh"
@@ -157,7 +178,7 @@ EOL)
 		open -a $BROWSER $TEMP_FILE$HTML_EXTENSION
 		sleep 0.5
 	fi
-	rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
+	# rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
 	exit 0
 else
 	if [ "/dev/null" == "$A" ]; then 
