@@ -6,6 +6,8 @@ B=$2
 #echo "REMOTE: $B"
 #echo "MERGED: $3" # unused
 
+USE_FENESTRO=false
+BROWSER="" # "Firefox"
 TEMP_FILE="$(mktemp /tmp/cleandifffapp.XXXXXX).cdiff"
 HTML_EXTENSION=".html"
 # make sure we're only dealing with text files
@@ -16,18 +18,18 @@ unset LANG
 if file $A | grep 'text' >/dev/null 2>&1 || \
 	file $B | grep 'text' >/dev/null 2>&1 ; then
 
-	# The heart of our functionality. 
+	# The heart of our functionality.
 	# diff the files and have dwdiff break the results down into smaller "words"
 
 
 	dwdiff -A best -L -c -d "\x0A%,;/:._{}[]()'\!|-=~><\"\\\\" $A $B | cat > $TEMP_FILE
 
 	# Extract the name of the file we're diffing
-	# $A and $B aren't trustable as names because 
+	# $A and $B aren't trustable as names because
 	# when used with git diff(tool) they'll just be temp files.
 	# There are a couple lines which start with --- and +++
-	# which mention the name of the "left" and "right" sides of the diff. 
-	# I've chosen the "right" one because it's more likely to be 
+	# which mention the name of the "left" and "right" sides of the diff.
+	# I've chosen the "right" one because it's more likely to be
 	# what you ended up with.
 	#FILE_NAME=`grep -m1 --color=none +++ $TEMP_FILE | sed -e 's/+++ //' -e 's/	.*//'`
 	FILE_NAME=`basename $1 | sed -E 's|^.{6}_||'`
@@ -46,44 +48,47 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	#   are being diffed).
 	# * Remove the + at the start of some lines (see Issue #2)
 	# * Remove the leading whitespace before the line numbers
+
 	cat $TEMP_FILE \
 		| sed -e '/^\+\+\+/ d' -e '/^---/ d' -e '/^@@.*@@/d' \
 			-e 's/^+//'\
 		| sed -E 's/^ +([0-9]+:[0-9]+)/\1/' \
 		| sed -E "s/("$'\E'"\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]) +([0-9]+)/\1\5/g" \
 		> "$TEMP_FILE.2"
-	mv "$TEMP_FILE.2" $TEMP_FILE
-	# ^^^  this version can be used by vim, emacs, etc 
+	# ^^^  this version can be used by vim, emacs, etc
 	# assuming they've got a plugin to support ANSI Escape Codes
 
-	#DEBUG
-	#gvim -O $TEMP_FILE
-	#sleep 0.5
-
 	# Convert the ncurses to html
-	# passing in a title, even though we're also passing in the 
-	# --no-header option, which is kind-of silly, but I'm leaving it 
+	# passing in a title, even though we're also passing in the
+	# --no-header option, which is kind-of silly, but I'm leaving it
 	# because it doesn't hurt and we may want it some day.
 	cat $TEMP_FILE \
 		| aha --stylesheet --no-header -t "$FILE_NAME" \
+		| perl -p -e "s/\n/XXX_NEWLINE_XXX/g" \
+		| sed -e "s/XXX_NEWLINE_XXX<\/span>/<\/span>\n/g" -e "s/XXX_NEWLINE_XXX/\n/g" \
 		> $TEMP_FILE$HTML_EXTENSION
 
 	# Clean up the HTML
 	# NOTE:
-	#  The weird newlines in the middle of the sed substitutions are because 
+	#  The weird newlines in the middle of the sed substitutions are because
 	#  it seems to be the best way to get a newline in there.. :/
-	# 
+	#
 	# * build table cells and rows around line numbers, and comments.
+
 	cat $TEMP_FILE$HTML_EXTENSION \
+		| sed -e 's/<span class="bold green "><\/span>//g' \
+		  -e 's/<span class="bold red "><\/span>//g' \
+		| sed -E "s/^[[:space:]]+//g" \
 		| sed -E "s|^([0-9]+:[0-9]+) {2,4}|</span></div>\
 <div class='line pre'><span class='linenums'><a class='linenum_link' name='\1'>\1</a></span><span class='source'>|" \
-		| sed -E "s|^</span>([0-9]+:[0-9]+) {0,4}|</span></div>\
+		| sed -E "s|^([0-9]+:[0-9]+) {0,4}|</span></div>\
 <div class='line pre'><span class='linenums'><a class='linenum_link' name='\1'>\1</a></span><span class='source'>|" \
-		| sed -e $"s/<div class='line pre'>/\\\n\\\t\\\t\\\t<div class='line pre'>/g" \
-		| sed -E -e '/class="red|class="green/! {s/line pre/line pre unchanged/g;}' \
+		| sed -e $"s/<div class='line pre'>/\n\t\t\t<div class='line pre'>/g" \
+		| sed -E -e '/class="bold red|class="bold green/! {s/line pre/line pre unchanged/g;}' \
 		> "$TEMP_FILE.partial.$HTML_EXTENSION"
 
-	# what's that you say? 
+
+	# what's that you say?
 	# symlinks suck in bash?
 	# yes... yes they do.
 	pushd `dirname $0` > /dev/null
@@ -98,7 +103,7 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	CSS=$(cat "$SCRIPT_PATH/cleandiff.css")
 	JS=$(cat "$SCRIPT_PATH/cleandiff.js")
 
-	# Haz ourselves some HTML 
+	# Haz ourselves some HTML
 	# for browserfication.
 	HEADER=$(cat <<EOL
 	<html>
@@ -126,7 +131,7 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 			</div>
 			<div class="diff"><div><span>
 			<!-- last two to compensate for sedness -->
-			
+
 EOL)
 
 
@@ -140,27 +145,29 @@ EOL)
 	</html>
 EOL)
 
-	# you put your header in, you put your css in, you put your footer in 
+	# you put your header in, you put your css in, you put your footer in
 	# and you shake it all around.
 	echo "$HEADER$(<"$TEMP_FILE.partial.$HTML_EXTENSION")$FOOTER" > $TEMP_FILE$HTML_EXTENSION
+	rm "$TEMP_FILE.partial.$HTML_EXTENSION"
+
 	# You do the hokey pokey, and you turn yourself around.
 	# That's what it's all about.
 
-	USE_FENESTRO=false
-	BROWSER="Firefox"
 	if [ -e "$HOME/.config/cdiff/cdiff1.sh" ]; then
 		source "$HOME/.config/cdiff/cdiff1.sh"
 	fi
-	if [ "$USE_FENESTRO" == "true" ]; then 
+	if [ "$USE_FENESTRO" == "true" ]; then
 		fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
+	elseif [ "$BROWSER" != "" ];
+		open -a "$BROWSER" $TEMP_FILE$HTML_EXTENSION
 	else
-		open -a $BROWSER $TEMP_FILE$HTML_EXTENSION
-		sleep 0.5
+		open $TEMP_FILE$HTML_EXTENSION
 	fi
+	sleep 0.5
 	rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
 	exit 0
 else
-	if [ "/dev/null" == "$A" ]; then 
+	if [ "/dev/null" == "$A" ]; then
 		echo "Skipping binary file $B" # an added file
 	else
 		echo "Skipping binary file $A" # a removed file
