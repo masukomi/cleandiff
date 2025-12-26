@@ -40,6 +40,7 @@ linum {
 	text-overflow: ellipsis;
 	display:table-cell;
 	cursor: pointer;
+	font-family: monospace;
 }
 raw {
 	margin-left: 1rem;
