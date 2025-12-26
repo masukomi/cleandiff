@@ -3,15 +3,11 @@ body{
 	color: rgb(163,160,165);
 	/* a dim, but visible grey(ish) */
 }
-.diff {
+diff {
 	display: table;
 	width: 100%;
 }
-.pre {
-	font-family: monospace;
-	white-space: pre;
-}
-.line{
+diffline{
 	clear: left;
 	display:table-row;
 }
@@ -34,7 +30,7 @@ input[type=checkbox] {
 	display: table-row;
 	background: #313131;
 }
-.linenums{
+linum {
 	margin-right: 1rem;
 	padding-right: 0.5rem;
 	border-right: solid 1px #ccc;
@@ -45,15 +41,24 @@ input[type=checkbox] {
 	display:table-cell;
 	cursor: pointer;
 }
-.source{
+raw {
 	margin-left: 1rem;
 	padding-left: 0.5rem;
 	display:table-cell;
+	font-family: monospace;
+	white-space: pre;
 }
-.bold {font-style: bold;}
-.green { color: #79DB73;}
-.red { color: #f1a340;}
-.filename { 
+inserted, deleted {
+	font-style: bold;
+}
+inserted {
+	color: #79DB73;
+}
+deleted {
+	color: #f1a340;
+}
+
+.filename {
 	color: rgba(115, 120, 144, 1);
 	font-family: sans-serif;
 	font-size: 120%;

@@ -14,7 +14,7 @@ function getChildrenUpTo(node, stopAt){
 	var r = [];
 	for ( ; node; node = node.nextSibling ) {
 		if ( node.nodeType == 1 && node != stopAt) {
-			if (node.classList[0] == "line") {
+			if (node.tagName == "DIFFLINE") {
 			// ^^ only to compensate for bug in bash version's source html
 				r.push( node );
 			}
@@ -69,12 +69,8 @@ function expandNodeIfUnchanged(node){
 	}
 }
 
-function getAllAnchors(){
-	return document.getElementsByClassName("linenum_link");
-}
-
 function getChangedLineDivs(){
-	var all_lines = document.getElementsByClassName("line");
+	var all_lines = document.getElementsByTagName("diffline");
 	var changed_lines = [];
 	for (var x = 0; x < all_lines.length; x++){
 		var node = all_lines[x];
@@ -84,12 +80,15 @@ function getChangedLineDivs(){
 	}
 	return changed_lines;
 }
-function addOnClickToAnchors(number_anchors){
+function addOnClickToLineNumbers(number_anchors){
 	for (var x = 0; x < number_anchors.length; x++){
 		var anchor = number_anchors[x]
 		anchor.addEventListener("click",
-			function(){expandPreviousSiblings(this.parentNode.parentNode,
-				defaultClickExpansionSize)}, false);
+			function(){
+				expandPreviousSiblings(
+					this.parentNode,
+				    defaultClickExpansionSize
+				)}, false);
 	}
 }
 function expandAroundChangedLines(){
@@ -101,9 +100,9 @@ function expandAroundChangedLines(){
 	}
 }
 
-function activateAnchors(){
-	var number_anchors = getAllAnchors();
-	addOnClickToAnchors(number_anchors);
+function activateLineNumbers(){
+	var linum_elements =  document.getElementsByTagName("linum");
+	addOnClickToLineNumbers(linum_elements);
 	expandAroundChangedLines()
 }
 
