@@ -7,6 +7,7 @@ B=$2
 #echo "MERGED: $3" # unused
 
 USE_FENESTRO=false
+DELETE_TEMPFILES=true
 BROWSER="" # "Firefox"
 TEMP_FILE="$(mktemp /tmp/cleandifffapp.XXXXXX).cdiff"
 HTML_EXTENSION=".html"
@@ -152,14 +153,19 @@ EOL)
 		source "$HOME/.config/cdiff/cdiff1.sh"
 	fi
 	if [ "$USE_FENESTRO" == "true" ]; then
-		fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
-	elseif [ "$BROWSER" != "" ];
+		fenestra --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
+	elif [ "$BROWSER" != "" ]; then
 		open -a "$BROWSER" $TEMP_FILE$HTML_EXTENSION
 	else
 		open $TEMP_FILE$HTML_EXTENSION
 	fi
 	sleep 0.5
-	rm $TEMP_FILE $TEMP_FILE$HTML_EXTENSION
+    if [ "$DELETE_TEMPFILES" == "true" ]; then
+		rm "$TEMP_FILE"*
+    else
+      echo "tempfiles for $FILE_NAME"
+      ls "$TEMP_FILE"*
+    fi
 	exit 0
 else
 	if [ "/dev/null" == "$A" ]; then
