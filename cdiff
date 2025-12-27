@@ -6,10 +6,14 @@ B=$2
 #echo "REMOTE: $B"
 #echo "MERGED: $3" # unused
 
-USE_FENESTRO=false
+if [ -z "$USE_FENESTRO" ]; then
+	USE_FENESTRO=false
+fi
 DELETE_TEMPFILES=true
+DELAY_BEFORE_DELETING_TEMPFILES=0.3
 BROWSER="" # "Firefox"
-TEMP_FILE="$(mktemp /tmp/cleandifffapp.XXXXXX).cdiff"
+BASE_TEMP_FILE="/tmp/cleandifffapp"
+TEMP_FILE="$(mktemp "$BASE_TEMP_FILE.XXXXXX").cdiff"
 HTML_EXTENSION=".html"
 # make sure we're only dealing with text files
 unset LANG
@@ -22,11 +26,17 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	# The heart of our functionality.
 	# diff the files and have dwdiff break the results down into smaller "words"
 
+	# Because we _may_ be diffing HTML
+	# We're using {{inserted}} {{deleted}} tags
+	# instead of raw html ones
+	# because we need to convert the < & > in any HTML
+	# we are diffing to be &lt; & &gt;
+	# Then we'll convert the {{ & }} to < & >
 
-	dwdiff --start-delete="<deleted>" \
-		--stop-delete="</deleted>" \
-		--start-insert="<inserted>" \
-		--stop-insert="</inserted>" \
+	dwdiff --start-delete="{{deleted}}" \
+		--stop-delete="{{/deleted}}" \
+		--start-insert="{{inserted}}" \
+		--stop-insert="{{/inserted}}" \
 	    --delimiters="\x0A%,;/:._{}[]()'\!|-=~><\"\\\\" \
 		--repeat-markers \
 		-A best --repeat-markers -L $A $B | cat > $TEMP_FILE
@@ -52,42 +62,27 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 
 	# Clean up the dwdiff output.
 	# * Remove the escape codes that shouldn't be there but are
+	#   1st 2 lines
 	# * Remove the leading whitespace before the line numbers
+	#   next line
+	# * convert the content's < & > to &lt; & &gt;
+	# * convert the double curlies around inserted and deleted to < & >
 	# * give the newline only inserted & deleted tags some content
-	# *
+	#   a human can see
+	# * add a css class to lines with no insertions or deletions
 
 	cat $TEMP_FILE \
 		| gsed -E "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?[m,K,H,f,J]//gm" \
 		| gsed -E "s/\x1B\([A-Z]{1}(\x1B\[[m,K,H,f,J])?//gm" \
 	 	| sed -E "s/("$'\E'"\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]) +([0-9]+)/\1\5/g" \
+		| sed -e "s/</\&lt;/g" -e "s/>/\&gt;/g" \
+		  -e "s/{{inserted}}/<inserted>/g" -e "s/{{\/inserted}}/<\/inserted>/g" \
+		  -e "s/{{deleted}}/<deleted>/g" -e "s/{{\/deleted}}/<\/deleted>/g" \
 		| sed -E 's/^ +([0-9]+:[0-9]+) *(.*)/<diffline><linum>\1<\/linum><raw>\2 <\/raw><\/diffline>/' \
 	    | sed -e "s/<inserted><\/inserted>/<inserted>⏎<\/inserted>/g" \
 		-e "s/<deleted><\/deleted>/<deleted>⏎<\/deleted>/g" \
 		| sed -E "/inserted|deleted/!s/<diffline>/<diffline class='unchanged'>/g" \
 		> $TEMP_FILE$HTML_EXTENSION
-
-	    # -e "s/<inserted>INSERTED<\/inserted>//g" \
-		# -e "s/<deleted>DELETED<\/deleted>//g" \
-		# > $TEMP_FILE$HTML_EXTENSION
-
-# 	# Clean up the HTML
-# 	# NOTE:
-# 	#  The weird newlines in the middle of the sed substitutions are because
-# 	#  it seems to be the best way to get a newline in there.. :/
-# 	#
-# 	# * build table cells and rows around line numbers, and comments.
-
-# 	cat $TEMP_FILE$HTML_EXTENSION \
-# 		| sed -e 's/<span class="bold green "><\/span>//g' \
-# 		  -e 's/<span class="bold red "><\/span>//g' \
-# 		| sed -E "s/^[[:space:]]+//g" \
-# 		| sed -E "s|^([0-9]+:[0-9]+) {2,4}|</span></div>\
-# <div class='line pre'><span class='linenums'><a class='linenum_link' name='\1'>\1</a></span><span class='source'>|" \
-# 		| sed -E "s|^([0-9]+:[0-9]+) {0,4}|</span></div>\
-# <div class='line pre'><span class='linenums'><a class='linenum_link' name='\1'>\1</a></span><span class='source'>|" \
-# 		| sed -e $"s/<div class='line pre'>/\n\t\t\t<div class='line pre'>/g" \
-# 		| sed -E -e '/class="bold red|class="bold green/! {s/line pre/line pre unchanged/g;}' \
-# 		> "$TEMP_FILE.partial.$HTML_EXTENSION"
 
 
 	# what's that you say?
@@ -153,9 +148,6 @@ EOL
 	# You do the hokey pokey, and you turn yourself around.
 	# That's what it's all about.
 
-	if [ -e "$HOME/.config/cdiff/cdiff1.sh" ]; then
-		source "$HOME/.config/cdiff/cdiff1.sh"
-	fi
 	if [ "$USE_FENESTRO" == "true" ]; then
 		fenestra --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
 	elif [ "$BROWSER" != "" ]; then
@@ -163,7 +155,8 @@ EOL
 	else
 		open $TEMP_FILE$HTML_EXTENSION
 	fi
-	sleep 0.5
+	sleep $DELAY_BEFORE_DELETING_TEMPFILES
+	cp $TEMP_FILE$HTML_EXTENSION ~/Desktop/temp/$FILE_NAME$HTML_EXTENSION
     if [ "$DELETE_TEMPFILES" == "true" ]; then
 		rm "$TEMP_FILE"*
     else
