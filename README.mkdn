@@ -6,6 +6,8 @@ CleanDiff removes the unnecessary noise from diffs so that your brain can focus 
 
 Pass it any two files, or use it in conjunction with `git diff` or `git difftool`
 
+
+
 ### Example
 Imagine you add a few words to a file, then want to see the diff. The screenshot below shows how nigh-impossible it is to see what's changed when you use `diff`. [Kaleidoscope](http://www.kaleidoscopeapp.com/) definitely improves on the situation, but CleanDiff makes it even clearer.
 
@@ -36,7 +38,6 @@ CleanDiff currently requires 2 *nix utilities which most of you are unlikely to 
 
 	# on OS X (after Homebrew has been installed)
 	$ brew install dwdiff
-	$ brew install aha
 	
 Linux people should use whatever the package manager is for your distro.
 	
@@ -62,79 +63,28 @@ and add the `cdiff` executable to your `$PATH`.
 
 Please note. The [Term::AnsiColor gem](https://github.com/flori/term-ansicolor) installs a script called cdiff at /usr/bin. If you've installed this then you'll want to make sure that cleandiff's directory comes before `/usr/bin` in your path, or just get rid of their `cdiff` because really, why would you need it when you've got this?
 
+### Configuring cleandiff as a git difftool
+
+
+Add the following to your `~/.gitconfig`
+```
+[alias]
+	cdiff = difftool --tool=cdiff
+	
+[difftool "cdiff"]
+	cmd = cdiff \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+```
+
+Then - assuming the `cdiff` executable is in your `$PATH` you can invoke cleandiff with `git cdiff` instead of `git diff`
+
+For example: `git cdiff HEAD~3`
 
 #### Configuration
 You can View CleanDiff changes in [Fenestro](https://fenestro.xyz) if you're a
 mac user. Otherwise you'll need to view it's output in your favorite browser.
 
-By Default it will attempt to load its changes in Firefox.
+If Fenestro is in your path it will find it and use it automatically. Otherwise it will use the `open` command and let your OS open it in the default handler for HTML files.
 
-To use Fenestro:
-edit `~/config/cdiff/cdiff1.sh` and add `USE_FENESTRO=true`
-
-To change the browser: 
-edit `~/config/cdiff/cdiff1.sh` and add `BROWSER=MyFavoriteBrowser` Whatever you
-enter will be called with `open -a $BROWSER path/to/cdiff_output.html`
-
-Your choices are:
-* Your favorite web browser
-* Your favorite text editor (probably)
-
-You'll also need to tell git how to use it as a graphical difftool.
-
------------------------------------------------------------------------
-
-**Configuring your favorite browser**  
-At the bottom of the cdiff file you'll see some comments about Chrome, Safari, Firefox. Uncomment / tweak the one that makes you most smiley.
-
------------------------------------------------------------------------
-
-**Configuring yor favorite text editor**  
-cdiff generates files with ANSI escape codes for coloring, so you'll need to install the appropriate plugin in your favorite editor to enable support for colorizing text with ANSI escape codes. Without that it'll probably display the raw codes, and it'll look like poo (not litterally. There's no brown in our code.)
-
-VIM:  
-
-First we need to enable filetype detection so that it'll automatically recognize `.cdiff` files (and thus enable us to auto-colorize them).
-
-To do this just run the `integration/vim_setup.sh` script which will add a line to your `~/.vim/filetypes.vim` and create a `~/.vim/ftdetect/cdiff.vim` file. 
-
-Next install the [Colorizer Plugin](https://github.com/chrisbra/Colorizer) and add this to your `~/.vimrc`
-
-	let g:colorizer_auto_filetype='cdiff'
-	
-Now that you've got Vim configured to handle files with ANSI escape codes, and it knows how to detect `.cdiff` files, you'll want to uncomment the appropriate line at the bottom of our `cdiff` script. 
-
-	#MacVim
-	mvim $TEMP_FILE
-
-*Note / Rant*  
-Unfortunately, when using this with `git difftool` *it will open a new window  for every file you're diffing*, which sucks.  
-
-There's no real way to determine if your receiving one request for diffs in a series, or just one request, but in the future we can work to hack a solution by queueing up the requests to `vim` (and other editors) if they happen with very little time in between. 
-
-If you've got a better solution, please file an issue or Pull Request.
-
-
-EMACS:
-
-Instructions to follow as soon as an Emacs geek tells us how. ;)
-
------------------------------------------------------------------------
-
-**Configuring Git**  
-
-Configuring git is pretty simple. Just run the `integration/git_setup.sh` script.
-
-And if you haven't done it already you'll really want to disable the prompting, because it's really annoying.
-
-	$ git config --global difftool.prompt false
-
-While we're at it diffing with any git tool will be better for most folks with this
-
-	$ git config --global diff.algorithm patience
-
-### Usage
-(bet you thought we'd never get here, eh?)
 
 #### Usage without git
 
@@ -142,18 +92,23 @@ Pretty much the same as diff, only without any options.
 
 	$ cdiff path/to/file/a.txt path/to/file/b.txt
 
+You can pass it an optional third parameter to use when displaying the name of the file being diffed.
+
+
+	$ cdiff path/to/file/a.txt path/to/file/b.txt "coolnes.txt"
+
 #### Usage with Git
 
 If you've configured it as your default difftool then all you need to say is:
 
-	$ git difftool <anything you could pass to git diff>
+	$ git cdiff <anything you could pass to git diff>
 	
 	#Ex.
-	$ git difftool HEAD^
-	$ git difftool fe0438
-	$ git difftool HEAD^..HEAD
+	$ git cdiff HEAD^
+	$ git cdiff fe0438
+	$ git cdiff HEAD^..HEAD
 	# etc...
 	
-If you have *not* configured it as your default difftool then it's not very different. Just add in the `--tool` option like this:
+If you have *not* configured the `cdiff` alias then it's not very different. Just add in the `--tool` option like this:
 
 	$ git difftool --tool=cdiff <anything you could pass to git diff>
