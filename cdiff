@@ -1,12 +1,15 @@
 #!/usr/bin/env sh
+
 A=$1
 B=$2
+FILE_NAME=$3
 
-#echo "LOCAL: $A"
-#echo "REMOTE: $B"
-#echo "MERGED: $3" # unused
+# echo "LOCAL: $A, REMOTE: $B, MERGED: $3
+# "  >> ~/fenestro-args.log
 
-if [ -z "$USE_FENESTRO" ]; then
+if command -v fenestro > /dev/null; then
+	USE_FENESTRO=true
+else
 	USE_FENESTRO=false
 fi
 DELETE_TEMPFILES=true
@@ -49,14 +52,16 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 	# I've chosen the "right" one because it's more likely to be
 	# what you ended up with.
 	#FILE_NAME=`grep -m1 --color=none +++ $TEMP_FILE | sed -e 's/+++ //' -e 's/	.*//'`
-	FILE_NAME=`basename $1 | sed -E 's|^.{6}_||'`
-	FILE_NAME_2=`basename $2 | sed -E 's|^.{6}_||'`
-	if [ "$FILE_NAME" != "$FILE_NAME_2" ]; then
-		if [ "$FILE_NAME" != "null" ] && [ "$FILE_NAME_2" != "null" ]; then
-			FILE_NAME="$FILE_NAME -> $FILE_NAME_2"
-		elif [ "$FILE_NAME" == "null" ]; then
-			FILE_NAME=$FILE_NAME_2
-		# otherwise FILE_NAME is good to go
+	if [ "$FILE_NAME" = "" ]; then
+		FILE_NAME=`basename $1 | sed -E 's|^.{6}_||'`
+		FILE_NAME_2=`basename $2 | sed -E 's|^.{6}_||'`
+		if [ "$FILE_NAME" != "$FILE_NAME_2" ]; then
+			if [ "$FILE_NAME" != "null" ] && [ "$FILE_NAME_2" != "null" ]; then
+				FILE_NAME="$FILE_NAME -> $FILE_NAME_2"
+			elif [ "$FILE_NAME" == "null" ]; then
+				FILE_NAME=$FILE_NAME_2
+			# otherwise FILE_NAME is good to go
+			fi
 		fi
 	fi
 
@@ -152,8 +157,6 @@ EOL
 
 	if [ "$USE_FENESTRO" == "true" ]; then
 		fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
-	elif [ "$BROWSER" != "" ]; then
-		open -a "$BROWSER" $TEMP_FILE$HTML_EXTENSION
 	else
 		open $TEMP_FILE$HTML_EXTENSION
 	fi
