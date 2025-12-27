@@ -132,6 +132,9 @@ EOL
 	FOOTER=$(cat <<EOL
 			</diff>
 		<script language="JavaScript">
+            /* make the line numbers clickable
+               and unhide some of the lines
+               around the changes to provide context */
 			activateLineNumbers();
 		</script>
 		</body>
