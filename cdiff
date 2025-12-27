@@ -84,7 +84,6 @@ if file $A | grep 'text' >/dev/null 2>&1 || \
 		| sed -E "/inserted|deleted/!s/<diffline>/<diffline class='unchanged'>/g" \
 		> $TEMP_FILE$HTML_EXTENSION
 
-
 	# what's that you say?
 	# symlinks suck in bash?
 	# yes... yes they do.
@@ -152,7 +151,7 @@ EOL
 	# That's what it's all about.
 
 	if [ "$USE_FENESTRO" == "true" ]; then
-		fenestra --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
+		fenestro --path=$TEMP_FILE$HTML_EXTENSION --name="$FILE_NAME"
 	elif [ "$BROWSER" != "" ]; then
 		open -a "$BROWSER" $TEMP_FILE$HTML_EXTENSION
 	else
