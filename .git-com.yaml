@@ -12,6 +12,7 @@ code-section:
         - css
         - tests
         - configuration
+        - ui
     type: select
 change-type:
     after-string: ': '
