@@ -11,6 +11,7 @@ code-section:
         - js
         - css
         - tests
+        - configuration
     type: select
 change-type:
     after-string: ': '
