@@ -130,7 +130,19 @@ func main() {
 		}
 	}
 
-	// Write HTML to temp file
+	// Create file entry for IPC or new window
+	entry := FileEntry{
+		Name:    fileName,
+		Path:    "", // Generated content, no file path
+		Content: html,
+	}
+
+	// Try to send to existing instance first (sidebar mode)
+	if TrySendToSidebarInstance(entry) {
+		os.Exit(0)
+	}
+
+	// No existing instance - write HTML to temp file and spawn GUI
 	tmpFile, err := os.CreateTemp("", "cdiff-*.html")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error creating temp file: %v\n", err)
@@ -197,10 +209,17 @@ func spawnGUIBackground(htmlPath, displayName string) error {
 		return fmt.Errorf("failed to start GUI process: %w", err)
 	}
 
-	// Wait briefly for process to start
-	time.Sleep(100 * time.Millisecond)
+	// Wait for socket to be created (guarantees subsequent invocations can connect)
+	socketPath := getSidebarSocketPath()
+	deadline := time.Now().Add(5 * time.Second)
+	for time.Now().Before(deadline) {
+		if _, err := os.Stat(socketPath); err == nil {
+			return nil // Socket exists, child is ready
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
 
-	return nil
+	return fmt.Errorf("timeout waiting for GUI to start")
 }
 
 // runGUI runs the Wails application (called from GUI subprocess)
@@ -224,6 +243,12 @@ func runGUI(htmlPath, displayName string) {
 
 	// Create app with the file entry
 	app := NewApp(entry)
+
+	// Start IPC server for sidebar mode
+	ipcServer, err := StartSidebarServer(app)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: Could not start IPC server: %v\n", err)
+	}
 
 	// Load saved window state
 	state := LoadWindowState()
@@ -254,8 +279,12 @@ func runGUI(htmlPath, displayName string) {
 			Assets:  assets,
 			Handler: localFileHandler,
 		},
-		OnStartup:  app.startup,
-		OnShutdown: func(ctx context.Context) {},
+		OnStartup: app.startup,
+		OnShutdown: func(ctx context.Context) {
+			if ipcServer != nil {
+				ipcServer.Close()
+			}
+		},
 		Bind: []interface{}{
 			app,
 		},
