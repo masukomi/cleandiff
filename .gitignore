@@ -3,5 +3,6 @@
 .DS_Store
 instructions.*
 .claude/*
-build/*
+build/bin/*
+build/darwin/*
 *~lock~
