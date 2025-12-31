@@ -1,0 +1,29 @@
+	<html>
+		<head>
+			<title>{{.FileName}}</title>
+			<style>
+			{{.CSS}}
+			</style>
+			<script language="JavaScript">
+		      {{.JS}}
+			</script>
+		</head>
+		<body>
+			<input type="checkbox" id="unchanged_checkbox">
+			<div class="filename">
+				<label for="unchanged_checkbox">
+            {{.ShowHideIcon}}
+			{{.FileName}}
+				</label>
+			</div>
+			<diff>
+{{.Diff}}
+            </diff>
+		<script language="JavaScript">
+            /* make the line numbers clickable
+               and unhide some of the lines
+               around the changes to provide context */
+			activateLineNumbers();
+		</script>
+		</body>
+	</html>

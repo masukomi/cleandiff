@@ -1,0 +1,6 @@
+.fold
+.agent-shell/*
+.DS_Store
+instructions.*
+.claude/*
+build/*

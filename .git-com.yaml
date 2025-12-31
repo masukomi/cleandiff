@@ -1,0 +1,58 @@
+code-section:
+    after-string: '] '
+    before-string: '['
+    destination: title
+    instructions: Which section of the codebase?
+    modifiable: true
+    options:
+        - tokendiff
+        - fenestro
+        - html
+        - js
+        - css
+        - tests
+    type: select
+change-type:
+    after-string: ': '
+    destination: title
+    instructions: What kind of change?
+    modifiable: true
+    options:
+        - enhancement
+        - refactoring
+        - fix
+        - cleanup
+    type: select
+commit-title:
+    destination: title
+    placeholder: Commit Title
+    type: text
+commit-description:
+    allow-empty: true
+    destination: body
+    instructions: Please describe your changes.
+    type: multiline-text
+ticket-number:
+    allow-empty: true
+    before-string: "\n\nTicket: "
+    data-type: integer
+    destination: body
+    instructions: Associated Ticket Number (if any)
+    type: text
+tags:
+    allow-empty: true
+    before-string: "\n\nTags: "
+    destination: body
+    empty-selection-text: Don't Tag
+    instructions: (optional) add relevant tags
+    modifiable: true
+    options:
+        - tech-debt
+        - testing
+        - quality-of-life
+        - maintainability
+        - guard-rails
+        - dependencies
+        - hotfix
+    record-as: joined-string
+    type: multi-select
