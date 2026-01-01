@@ -13,6 +13,7 @@ code-section:
         - tests
         - configuration
         - ui
+        - documentation
     type: select
 change-type:
     after-string: ': '
