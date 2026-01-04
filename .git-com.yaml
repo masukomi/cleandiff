@@ -1,8 +1,32 @@
-code-section:
+change-type:
+    type: select
+    destination: title
     after-string: '] '
     before-string: '['
+    instructions: What kind of change?
+    modifiable: true
+    options:
+        - fix
+        - add
+        - refactor
+        - clean-up
+commit-title:
     destination: title
-    instructions: Which section of the codebase?
+    placeholder: Commit Title
+    type: text
+commit-description:
+    allow-empty: true
+    destination: body
+    instructions: Please describe your changes.
+    type: multiline-text
+code-sections:
+    type: multi-select
+    record-as: joined-string
+    allow-empty: true
+    before-string: "\nCode Sections: "
+    after-string: "\n"
+    destination: body
+    instructions: Which section(s) of the codebase?
     modifiable: true
     options:
         - tokendiff
@@ -14,27 +38,6 @@ code-section:
         - configuration
         - ui
         - documentation
-    type: select
-change-type:
-    after-string: ': '
-    destination: title
-    instructions: What kind of change?
-    modifiable: true
-    options:
-        - enhancement
-        - refactoring
-        - fix
-        - cleanup
-    type: select
-commit-title:
-    destination: title
-    placeholder: Commit Title
-    type: text
-commit-description:
-    allow-empty: true
-    destination: body
-    instructions: Please describe your changes.
-    type: multiline-text
 ticket-number:
     allow-empty: true
     before-string: "\n\nTicket: "
@@ -42,20 +45,3 @@ ticket-number:
     destination: body
     instructions: Associated Ticket Number (if any)
     type: text
-tags:
-    allow-empty: true
-    before-string: "\n\nTags: "
-    destination: body
-    empty-selection-text: Don't Tag
-    instructions: (optional) add relevant tags
-    modifiable: true
-    options:
-        - tech-debt
-        - testing
-        - quality-of-life
-        - maintainability
-        - guard-rails
-        - dependencies
-        - hotfix
-    record-as: joined-string
-    type: multi-select

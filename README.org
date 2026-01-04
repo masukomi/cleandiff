@@ -89,12 +89,9 @@ Cleandiff gives you two options for this.
 
 Usually - if any more context is needed - you only need a few more lines to understand the change. Clicking any of the line numbers near a jump will expand 10 lines above it. You can repeat as needed.
 
-#+ATTR_HTML: :alt A screenshot of the eye icon next to the filename with an arrow pointing to it.
-[[image-url:https://cleandiffapp.com/images/screenshot_eye_icon.png
-][annotated eye icon screenshot]]
+#+html: <div><img src="https://cleandiffapp.com/images/screenshot_additional_context.png" alt="A screenshot of the same before and after clicking a line number to expand the context"></div>
 
 Alternately, if you just want to see everything you can click the eye icon at the top of the page will show you the entire file, by toggling the visibility of all the hidden liens.
 
-#+ATTR_HTML: :alt A screenshot of the eye icon next to the filename with an arrow pointing to it.
-[[image-url:https://cleandiffapp.com/images/screenshot_eye_icon.png
-][annotated eye icon screenshot]]
+
+#+html: <div><img src="https://cleandiffapp.com/images/screenshot_eye_icon.png" alt="A screenshot of the eye icon next to the filename with an arrow pointing to it."></div>
